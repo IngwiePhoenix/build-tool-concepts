@@ -1,0 +1,18 @@
+var tc = toolchain("MyJS") {|tc|
+  step("babel") { from: ".mjs", to: ".js" }
+  step("babel-jsx") { from: ".jsx", to: ".js" }
+
+  rule("bundle") {
+    // ...
+    workflows: [
+      ["babel"],
+      ["babel-jsx"]
+    ]
+  }
+}
+
+IceTea.useToolchain(tc);
+
+target("main", "bundle") {
+  input: glob("./src/*.jsx") + glob("./src/*.mjs")
+}

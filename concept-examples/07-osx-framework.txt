@@ -1,0 +1,21 @@
+import OSX from "osxtools";
+
+namespace("IngwiePhoenix") {
+  Native.shared_lib("utils") {
+    input: [...]
+  }
+
+  // This will not build on Windows - this target will be disabled.
+  OSX.Framework("Utilities") {
+    needs: ["utils"],
+    properties: {
+      CFBundleDisplayName: "Utilities Framework",
+      // ...
+    }
+  }
+
+  action("default") {
+    // build & clean
+    do: ["utils", "Utilities"]
+  }
+}

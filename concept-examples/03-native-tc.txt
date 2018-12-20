@@ -1,0 +1,5 @@
+namespace("IngwiePhoenix") {
+  native.binary("hello") {
+    input: ["./src/hello.c"]
+  }
+}

@@ -1,0 +1,12 @@
+var cc = rule.get("CC");
+var myStep = step.bare(".y -> .c") {
+  run: function(in, out) {
+    return exec("byacc ${in} -o ${out}");
+  }
+}
+var c2o = cc.workflows.findStartsWith(".c -> .o");
+cc.workflows.composeNew(myStep, c2o);
+
+target("foo", "exe") {
+  input: ["./src/foo.y"]
+}

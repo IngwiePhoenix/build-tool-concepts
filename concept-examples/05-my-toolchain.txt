@@ -1,0 +1,34 @@
+import Native from "icetea/toolchains/native";
+var mytc = toolchain("/Custom/MyToolchain") {|tc|
+  tc.inherit(Native);
+
+  step("CC") {
+    from: ".c",
+    to: ".o",
+    run: {|in, out| exec("my-gcc /*...*/ -c ${in} -o ${out}")}
+  }
+  step("YCC") {
+    from: ".y",
+    to: ".c",
+    run: {|in, out| exec("y2c ...")}
+  }
+  rule("EXE") {
+    run: {|in, out| exec(...)},
+    workflows: [
+      ["CC"],
+      ["YCC", "CC"]
+    ]
+  }
+}
+
+IceTea.useToolchain(mytc);
+
+target("foo", "exe") {
+  input: ["./foo.c", "./bar.y"]
+}
+
+// This will now run:
+y2c bar.y -o bar.c
+my-gcc foo.c -o foo.o
+my-gcc bar.c -o bar.o
+my-gcc foo.o bar.o -o foo

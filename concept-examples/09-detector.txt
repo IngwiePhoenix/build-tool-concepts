@@ -1,0 +1,13 @@
+import DetectBase from "icetea/detect";
+class MyDetector extends DetectBase {
+  function __init() {}
+
+  function checkSomething() {return true;}
+}
+
+Detect.register("MY_DECT", MyDetector);
+
+var check = Detect("MY_DECT");
+var check2 = new MyDetector(); // Error: Should never directly instantiate this!
+
+check.checkSomething();

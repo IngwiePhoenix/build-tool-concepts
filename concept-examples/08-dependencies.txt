@@ -1,0 +1,18 @@
+// @file: package.json
+{
+  ...
+  "dependencies": {
+    "libyaml": {
+      "via": "github",
+      "from": "libyaml/libyaml",
+      "version": "#latest"
+    },
+    "jansson:github.com/jansson/jansson": "1.2.3"
+  }
+}
+
+// in build.it:
+target("pretty-json", "exe") {
+  needs: ["jansson/jansson"],
+  input: glob("./src/*.c")
+}

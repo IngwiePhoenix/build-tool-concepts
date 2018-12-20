@@ -1,0 +1,46 @@
+import GCCX from "gccx";
+import WebDev from "toolchains/webdev";
+import gRPC from "grpc-it";
+
+// Make GCCX available to C++ tools
+GCCX.attachTo(Native);
+
+// Make Emscripten tools available - but, emscripten only!
+WebDev.attachTo(Native, "emscripten");
+
+// Make gRPC available.
+gRPC.attachTo(Native);
+
+namespace("MyApp") {
+  namespace("Server") {
+    // Set a base path
+    this.baseDir = "./src/Server";
+
+    // Remember - WebDev only extended Native :)
+    Native.binary("rpc-master") {
+      input: glob("@/*.cpp") + glob("@/*.grpc"), // Same as: ./src/Server/*.cpp
+      needs: gRPC.defaultDeps
+    }
+
+    Native.static_lib("rpc-protos") {
+      input: glob("@/Base/*.grpc")
+    }
+
+    Native.binary("rpc-logger") {
+      input: glob("@/Logs/*.cpp"),
+      needs: ["rpc-protos"]
+    }
+  }
+
+  namespace("Browser") {
+    WebDev.WebPack("main", "./webpack.main.config.js");
+    WebDev.WebPack("libapi", "./webpack.libapi.config.js");
+  }
+
+  Namespace("Mobile") {
+    Native.EmscriptenBinary("app") {
+      input: glob("./src/Mobile/*.cpp"),
+    }
+    // Do something with this one now :)
+  }
+}

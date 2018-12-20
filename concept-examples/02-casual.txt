@@ -1,0 +1,5 @@
+namespace("IngwiePhoenix") {
+  target("hello", "exe") {
+    input: ["./src/hello.c"]
+  }
+}
